@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "MakerToolbox"
+version = "0.0.1"
+authors = [
+  { name="Jack Campbell", email="makertoolboxrepo@gmail.com" },
+]
+description = "The MakerToolbox module provides a collection of tools for working with various electronic hardware."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = ""
+"Bug Tracker" = ""
