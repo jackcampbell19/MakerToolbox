@@ -2,7 +2,7 @@
 The MakerToolbox module provides a collection of tools for working with various electronic hardware. The goal of this module is to simplify setting up and interfacing with hardware while developing maker projects.
 
 ## Imports
-`from makertoolbox import *`
+`from MakerToolbox import *`
 
 ## GPIO Interfaces
 The following classes can be used to interface with GPIO. Each class manages the logic for setting up GPIO depending on the hardware it represents.
@@ -22,7 +22,7 @@ A stepper driver that uses only a `stp` and `dir` pin.
 
 ## Examples
 ```python
-from makertoolbox import BasicStepperDriver, RPi4B
+from MakerToolbox import BasicStepperDriver, RPi4B
 
 # Move a stepper motor one direction and then the opposite direction.
 stepper: BasicStepperDriver = BasicStepperDriver(RPi4B.output_pin(1), RPi4B.output_pin(2))

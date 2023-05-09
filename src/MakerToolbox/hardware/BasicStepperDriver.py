@@ -1,5 +1,5 @@
 from time import sleep
-from makertoolbox.gpio import OutputPin
+from MakerToolbox.gpio import OutputPin
 
 
 class BasicStepperDriver:

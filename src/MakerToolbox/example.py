@@ -1,4 +1,4 @@
-from makertoolbox import *
+from MakerToolbox import *
 
 # Move a stepper motor forward and then backwards.
 stepper: BasicStepperDriver = BasicStepperDriver(RPi4B.output_pin(1), RPi4B.output_pin(2))
