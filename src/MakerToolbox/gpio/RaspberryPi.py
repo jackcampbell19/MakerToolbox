@@ -4,6 +4,7 @@ from .OutputPin import OutputPin
 try:
     # Try importing RPi GPIO package, define placeholder class if import fails.
     import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
 except ImportError:
     class GPIO:
         """
@@ -22,6 +23,10 @@ except ImportError:
 
         @staticmethod
         def output(x, y):
+            pass
+
+        @staticmethod
+        def cleanup():
             pass
 
 
@@ -72,4 +77,8 @@ class RPi4B:
         :return: An input pin object for the RPi4B
         """
         return RPi4BInPin(pin)
+
+    @staticmethod
+    def cleanup():
+        GPIO.cleanup()
 
