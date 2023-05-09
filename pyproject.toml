@@ -18,5 +18,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = ""
-"Bug Tracker" = ""
+"Homepage" = "https://github.com/jackcampbell19/MakerToolbox"
+"Bug Tracker" = "https://github.com/jackcampbell19/MakerToolbox/issues"
