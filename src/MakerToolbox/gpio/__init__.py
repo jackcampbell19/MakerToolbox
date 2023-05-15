@@ -1,3 +1,4 @@
 from .InputPin import InputPin
 from .OutputPin import OutputPin
-from .RaspberryPi import RPi4B
+from .PWMPin import PWMPin
+from .RaspberryPi import RPi4, RPi3

@@ -12,14 +12,6 @@ class InputPin(ABC):
         :param pin: The pin number.
         """
         self._pin = pin
-        self._setup()
-
-    @abstractmethod
-    def _setup(self):
-        """
-        Sets up the pin depending on the hardware.
-        """
-        pass
 
     @abstractmethod
     def read(self) -> bool:

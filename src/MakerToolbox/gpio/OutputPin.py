@@ -12,14 +12,6 @@ class OutputPin(ABC):
         :param pin: The pin number.
         """
         self._pin = pin
-        self._setup()
-
-    @abstractmethod
-    def _setup(self):
-        """
-        Sets up the pin depending on the hardware.
-        """
-        pass
 
     @abstractmethod
     def high(self):
@@ -32,5 +24,13 @@ class OutputPin(ABC):
     def low(self):
         """
         Pulls the pin high.
+        """
+        pass
+
+    @abstractmethod
+    def set(self, value: bool):
+        """
+        Pulls the pin given the value.
+        :param value: The desired state.
         """
         pass
