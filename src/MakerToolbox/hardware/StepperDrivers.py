@@ -1,6 +1,6 @@
 from time import sleep
 from abc import ABC, abstractmethod
-from gpio import OutputPin
+from ..gpio import OutputPin
 
 
 class StepperDriver(ABC):

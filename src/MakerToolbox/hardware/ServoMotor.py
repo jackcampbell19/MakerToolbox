@@ -1,4 +1,4 @@
-from gpio import PWMPin
+from ..gpio import PWMPin
 from time import sleep
 
 

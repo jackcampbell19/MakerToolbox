@@ -1,4 +1,4 @@
-from gpio import InputPin
+from ..gpio import InputPin
 from time import sleep
 
 

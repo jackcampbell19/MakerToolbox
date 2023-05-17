@@ -1,4 +1,4 @@
-from gpio import PWMPin, OutputPin
+from ..gpio import PWMPin, OutputPin
 
 
 def _convert_speed_to_duty_cycle(speed: float) -> float:

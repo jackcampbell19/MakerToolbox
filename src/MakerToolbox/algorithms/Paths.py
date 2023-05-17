@@ -1,4 +1,4 @@
-from utility import XYPosition
+from ..utility import XYPosition
 from typing import List
 from math import ceil, sqrt
 

@@ -1,5 +1,5 @@
-from hardware import BasicStepperDriver
-from utility import XYPosition
+from ..hardware import BasicStepperDriver
+from ..utility import XYPosition
 
 
 class CoreXY:
