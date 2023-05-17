@@ -44,7 +44,7 @@ class BasicStepperDriver(StepperDriver):
     A basic stepper driver capable of pulsing a stp and dir pin.
     """
 
-    def __init__(self, stp_pin: OutputPin, dir_pin: OutputPin, default_delay: float = 0.003):
+    def __init__(self, stp_pin: OutputPin, dir_pin: OutputPin, default_delay: float = 0.01):
         self._stp = stp_pin
         self._dir = dir_pin
         self._default_delay = default_delay
@@ -74,7 +74,7 @@ class ULN2003(StepperDriver):
     ULN2003 stepper driver.
     """
 
-    def __init__(self, in1: OutputPin, in2: OutputPin, in3: OutputPin, in4: OutputPin, default_delay: float = 0.003):
+    def __init__(self, in1: OutputPin, in2: OutputPin, in3: OutputPin, in4: OutputPin, default_delay: float = 0.01):
         self._in1 = in1
         self._in2 = in2
         self._in3 = in3
@@ -85,25 +85,17 @@ class ULN2003(StepperDriver):
         self._in2.low()
         self._in3.low()
         self._in4.low()
-        self._sequence = [True, False, False, True]
+        self._sequence = [False, False, False, False, False, True, True, True]
 
     def step(self, delay: float = None):
         if delay is None:
             delay = self._default_delay
-        if self._direction:
-            for x in range(4):
-                self._in1.set(self._sequence[x % 4])
-                self._in2.set(self._sequence[(x + 2) % 4])
-                self._in3.set(self._sequence[(x + 3) % 4])
-                self._in4.set(self._sequence[(x + 1) % 4])
-                sleep(delay)
-        else:
-            for x in range(4):
-                self._in1.set(self._sequence[x % 4])
-                self._in2.set(self._sequence[(x + 2) % 4])
-                self._in3.set(self._sequence[(x + 1) % 4])
-                self._in4.set(self._sequence[(x + 3) % 4])
-                sleep(delay)
+        for x in range(8) if self._direction else range(8, -1, -1):
+            self._in1.set(self._sequence[x % 8])
+            self._in2.set(self._sequence[(x + 3) % 8])
+            self._in3.set(self._sequence[(x + 4) % 8])
+            self._in4.set(self._sequence[(x + 6) % 8])
+            sleep(delay)
 
     def set_direction(self, value: bool):
         self._direction = value
