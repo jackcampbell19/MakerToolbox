@@ -90,7 +90,7 @@ class GenericRPiPWMPin(PWMPin):
     def __init__(self, pin: int, frequency: int):
         super().__init__(pin, frequency)
         GPIO.setup(pin, GPIO.OUT)
-        self._pwm = GPIO.PWM(pin, 1000)
+        self._pwm = GPIO.PWM(pin, frequency)
 
     def start(self, duty_cycle: float):
         self._pwm.start(duty_cycle)
