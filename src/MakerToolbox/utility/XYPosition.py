@@ -9,7 +9,6 @@ class XYPosition:
         self.y = y
 
     def __sub__(self, other: 'XYPosition'):
-        x = self.x - other.x
         return XYPosition(self.x - other.x, self.y - other.y)
 
     def __add__(self, other: 'XYPosition'):
@@ -20,3 +19,6 @@ class XYPosition:
 
     def __repr__(self):
         return f"({self.x}, {self.y})"
+
+    def __hash__(self):
+        return hash((self.x, self.y))
