@@ -1,4 +1,4 @@
-from ..hardware import BasicStepperDriver
+from ..hardware import BasicStepperDriver, StepperDriver
 from ..utility import XYPosition
 
 
@@ -12,7 +12,7 @@ class CoreXY:
         _current_position (XYPosition): Current position of the utility system.
     """
 
-    def __init__(self, stepper_a: BasicStepperDriver, stepper_b: BasicStepperDriver):
+    def __init__(self, stepper_a: BasicStepperDriver, stepper_b: BasicStepperDriver, delay_func: callable = lambda c, t: 0.006):
         """
         Initializes a CoreXY utility system.
 
@@ -23,43 +23,7 @@ class CoreXY:
         self._stepper_a = stepper_a
         self._stepper_b = stepper_b
         self._current_position = XYPosition(0, 0)
-
-    def step_together(self, steps: int, delay_func: callable = None):
-        """
-        Performs a specified number of steps on both motors simultaneously.
-
-        Args:
-            steps (int): Number of steps to perform.
-            delay_func (callable, optional): Custom delay function. If provided,
-                it should take two arguments: current step and total steps,
-                and return the delay time in seconds for the current step.
-        """
-        for current in range(steps):
-            if delay_func is not None:
-                delay = delay_func(current, steps)
-            else:
-                delay = None
-            self._stepper_a.step(delay)
-            self._stepper_b.step(delay)
-
-    @staticmethod
-    def step_single(stepper: BasicStepperDriver, steps: int, delay_func: callable = None):
-        """
-        Performs a specified number of steps on a single motor.
-
-        Args:
-            stepper (BasicStepperDriver): Stepper driver to control.
-            steps (int): Number of steps to perform.
-            delay_func (callable, optional): Custom delay function. If provided,
-                it should take two arguments: current step and total steps,
-                and return the delay time in seconds for the current step.
-        """
-        for current in range(steps):
-            if delay_func is not None:
-                delay = delay_func(current, steps)
-            else:
-                delay = None
-            stepper.step(delay)
+        self._delay_func = delay_func
 
     def north(self, steps: int, delay_func: callable = None):
         """
@@ -71,9 +35,11 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
+        if delay_func is None:
+            delay_func = self._delay_func
         self._stepper_a.set_direction(True)
         self._stepper_b.set_direction(False)
-        self.step_together(steps, delay_func)
+        StepperDriver.move([self._stepper_a, self._stepper_b], steps, delay_func)
         self._current_position.y -= steps
 
     def south(self, steps: int, delay_func: callable = None):
@@ -86,9 +52,11 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
+        if delay_func is None:
+            delay_func = self._delay_func
         self._stepper_a.set_direction(False)
         self._stepper_b.set_direction(True)
-        self.step_together(steps, delay_func)
+        StepperDriver.move([self._stepper_a, self._stepper_b], steps, delay_func)
         self._current_position.y += steps
 
     def east(self, steps: int, delay_func: callable = None):
@@ -101,9 +69,11 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
-        self._stepper_a.set_direction(True)
-        self._stepper_b.set_direction(True)
-        self.step_together(steps, delay_func)
+        if delay_func is None:
+            delay_func = self._delay_func
+        self._stepper_a.set_direction(False)
+        self._stepper_b.set_direction(False)
+        StepperDriver.move([self._stepper_a, self._stepper_b], steps, delay_func)
         self._current_position.x += steps
 
     def west(self, steps: int, delay_func: callable = None):
@@ -116,9 +86,11 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
-        self._stepper_a.set_direction(False)
-        self._stepper_b.set_direction(False)
-        self.step_together(steps, delay_func)
+        if delay_func is None:
+            delay_func = self._delay_func
+        self._stepper_a.set_direction(True)
+        self._stepper_b.set_direction(True)
+        StepperDriver.move([self._stepper_a, self._stepper_b], steps, delay_func)
         self._current_position.x -= steps
 
     def north_west(self, steps: int, delay_func: callable = None):
@@ -131,8 +103,9 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
-        self._stepper_a.set_direction(True)
-        self.step_single(self._stepper_a, steps * 2, delay_func)
+        if delay_func is None:
+            delay_func = self._delay_func
+        self._stepper_a.step(steps * 2, delay_func, direction=True)
         self._current_position.x -= steps
         self._current_position.y -= steps
 
@@ -146,8 +119,9 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
-        self._stepper_b.set_direction(True)
-        self.step_single(self._stepper_b, steps * 2, delay_func)
+        if delay_func is None:
+            delay_func = self._delay_func
+        self._stepper_b.step(steps * 2, delay_func, direction=False)
         self._current_position.x += steps
         self._current_position.y -= steps
 
@@ -161,8 +135,9 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
-        self._stepper_b.set_direction(False)
-        self.step_single(self._stepper_b, steps * 2, delay_func)
+        if delay_func is None:
+            delay_func = self._delay_func
+        self._stepper_b.step(steps * 2, delay_func, direction=True)
         self._current_position.x -= steps
         self._current_position.y += steps
 
@@ -176,7 +151,8 @@ class CoreXY:
                 it should take two arguments: current step and total steps,
                 and return the delay time in seconds for the current step.
         """
-        self._stepper_a.set_direction(False)
-        self.step_single(self._stepper_a, steps * 2, delay_func)
+        if delay_func is None:
+            delay_func = self._delay_func
+        self._stepper_a.step(steps * 2, delay_func, direction=False)
         self._current_position.x += steps
         self._current_position.y += steps

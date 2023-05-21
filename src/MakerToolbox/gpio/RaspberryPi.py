@@ -28,9 +28,11 @@ except ImportError:
         """
         IN = 0
         OUT = 1
+        PUD_UP = 2
+        PUD_DOWN = 3
 
         @staticmethod
-        def setup(x, y):
+        def setup(x, y, pull_up_down=None):
             pass
 
         @staticmethod
@@ -74,12 +76,12 @@ class GenericRPiInPin(InputPin):
     Input pin implementation for generic RPi.
     """
 
-    def __init__(self, pin: int):
+    def __init__(self, pin: int, pull_up: bool = True):
         super().__init__(pin)
-        GPIO.setup(pin, GPIO.IN)
+        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP if pull_up else GPIO.PUD_DOWN)
 
     def read(self) -> bool:
-        return GPIO.input(self._pin)
+        return bool(GPIO.input(self._pin))
 
 
 class GenericRPiPWMPin(PWMPin):

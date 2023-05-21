@@ -23,7 +23,7 @@ class Button:
         Returns:
             bool: True if the button is pressed, False otherwise.
         """
-        return self._pin.read() is self._pressed_value
+        return self._pin.read() == self._pressed_value
 
     def wait_for_press(self, delay: float = 0.01):
         """

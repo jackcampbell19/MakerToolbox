@@ -42,7 +42,7 @@ class StepperDriver(ABC):
             steppers (List['StepperDriver']): A list of stepper motor drivers.
             num_steps (int, optional): The number of steps to perform. Defaults to 1.
             delay_func (callable, optional): A function that calculates the delay between steps. Defaults to lambda current, total: 0.003.
-            """
+        """
         phase_counts = [len(stepper._step_phases) for stepper in steppers]
         assert max(phase_counts) == min(phase_counts)
         num_phases = max(phase_counts)
