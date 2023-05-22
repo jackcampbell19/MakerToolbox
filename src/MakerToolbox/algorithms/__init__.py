@@ -1,1 +1,1 @@
-from .Paths import compute_discrete_xy_path_differentials
+from .Paths import compute_discrete_2d_path_differentials
