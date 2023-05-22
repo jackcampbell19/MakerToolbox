@@ -1,1 +1,1 @@
-from .XYPosition import XYPosition
+from .Discrete2DPosition import Discrete2DPosition

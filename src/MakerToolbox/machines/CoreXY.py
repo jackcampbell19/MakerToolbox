@@ -1,5 +1,5 @@
 from ..hardware import BasicStepperDriver, StepperDriver
-from ..utility import XYPosition
+from ..utility import Discrete2DPosition
 
 
 class CoreXY:
@@ -9,7 +9,7 @@ class CoreXY:
     Attributes:
         stepper_a (BasicStepperDriver): Stepper driver for motor A.
         stepper_b (BasicStepperDriver): Stepper driver for motor B.
-        _current_position (XYPosition): Current position of the utility system.
+        _current_position (Discrete2DPosition): Current position of the utility system.
     """
 
     def __init__(self, stepper_a: BasicStepperDriver, stepper_b: BasicStepperDriver, delay_func: callable = lambda c, t: 0.006):
@@ -22,7 +22,7 @@ class CoreXY:
         """
         self._stepper_a = stepper_a
         self._stepper_b = stepper_b
-        self._current_position = XYPosition(0, 0)
+        self._current_position = Discrete2DPosition(0, 0)
         self._delay_func = delay_func
 
     def north(self, steps: int, delay_func: callable = None):
@@ -40,7 +40,7 @@ class CoreXY:
         self._stepper_a.set_direction(True)
         self._stepper_b.set_direction(False)
         StepperDriver.move([self._stepper_a, self._stepper_b], steps, delay_func)
-        self._current_position.y -= steps
+        self._current_position.y += steps
 
     def south(self, steps: int, delay_func: callable = None):
         """
@@ -57,7 +57,7 @@ class CoreXY:
         self._stepper_a.set_direction(False)
         self._stepper_b.set_direction(True)
         StepperDriver.move([self._stepper_a, self._stepper_b], steps, delay_func)
-        self._current_position.y += steps
+        self._current_position.y -= steps
 
     def east(self, steps: int, delay_func: callable = None):
         """
@@ -107,7 +107,7 @@ class CoreXY:
             delay_func = self._delay_func
         self._stepper_a.step(steps * 2, delay_func, direction=True)
         self._current_position.x -= steps
-        self._current_position.y -= steps
+        self._current_position.y += steps
 
     def north_east(self, steps: int, delay_func: callable = None):
         """
@@ -123,7 +123,7 @@ class CoreXY:
             delay_func = self._delay_func
         self._stepper_b.step(steps * 2, delay_func, direction=False)
         self._current_position.x += steps
-        self._current_position.y -= steps
+        self._current_position.y += steps
 
     def south_west(self, steps: int, delay_func: callable = None):
         """
@@ -139,7 +139,7 @@ class CoreXY:
             delay_func = self._delay_func
         self._stepper_b.step(steps * 2, delay_func, direction=True)
         self._current_position.x -= steps
-        self._current_position.y += steps
+        self._current_position.y -= steps
 
     def south_east(self, steps: int, delay_func: callable = None):
         """
@@ -155,4 +155,4 @@ class CoreXY:
             delay_func = self._delay_func
         self._stepper_a.step(steps * 2, delay_func, direction=False)
         self._current_position.x += steps
-        self._current_position.y += steps
+        self._current_position.y -= steps
