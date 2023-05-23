@@ -34,20 +34,20 @@ class StepperDriver(ABC):
                 sleep(delay)
 
     @staticmethod
-    def move(steppers: List['StepperDriver'], num_steps: int = 1, delay_func: callable = lambda current, total: 0.003):
+    def move(steppers: List['StepperDriver'], num_steps: int = 1, delay_func: callable = None):
         """
         Moves multiple stepper motors simultaneously.
 
         Args:
             steppers (List['StepperDriver']): A list of stepper motor drivers.
             num_steps (int, optional): The number of steps to perform. Defaults to 1.
-            delay_func (callable, optional): A function that calculates the delay between steps. Defaults to lambda current, total: 0.003.
+            delay_func (callable, optional): A function that calculates the delay between steps.
         """
         phase_counts = [len(stepper._step_phases) for stepper in steppers]
         assert max(phase_counts) == min(phase_counts)
         num_phases = max(phase_counts)
         for current_step in range(num_steps):
-            delay = delay_func(current_step, num_steps)
+            delay = delay_func(current_step, num_steps) if delay_func is not None else 0.003
             for x in range(num_phases):
                 for stepper in steppers:
                     stepper._step_phases[x]()

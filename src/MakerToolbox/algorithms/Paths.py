@@ -1,15 +1,15 @@
-from ..utility import Discrete2DPosition
+from ..utility import DiscreteVector
 from typing import List
-from math import ceil, sqrt
+from math import ceil
 
 
-def compute_discrete_2d_path_differentials(start: Discrete2DPosition, end: Discrete2DPosition) -> List[Discrete2DPosition]:
+def compute_discrete_path_differentials(start: DiscreteVector, end: DiscreteVector) -> List[DiscreteVector]:
     """
     Computes a discrete path between two positions relative to the start position.
 
     Args:
-        start (Discrete2DPosition): The starting position.
-        end (Discrete2DPosition): The ending position.
+        start (DiscreteVector): The starting position.
+        end (DiscreteVector): The ending position.
 
     Returns:
         List[Position]: A list of positions representing the computed path.
@@ -22,26 +22,25 @@ def compute_discrete_2d_path_differentials(start: Discrete2DPosition, end: Discr
         represents a change in position (position differential) required to reach the next
         position in the path.
     """
-    if start.x == end.x:
-        return [Discrete2DPosition(0, 1 if start.y < end.y else -1) for _ in range(abs(end.y - start.y))]
-    if start.y == end.y:
-        return [Discrete2DPosition(1 if start.x < end.x else -1, 0) for _ in range(abs(end.x - start.x))]
-    rebased_position = end - start
-    dx = rebased_position.x
-    slope = rebased_position.y / rebased_position.x
-    path: List[Discrete2DPosition] = []
-    prev_position = Discrete2DPosition(0, 0)
-    line_length = int(ceil(sqrt(rebased_position.x ** 2 + rebased_position.y ** 2)))
-    sample_dx = dx / line_length
-    for sample in range(line_length + 1):
-        x = int(round(sample * sample_dx))
-        y = int(round(sample * sample_dx * slope))
-        current_position = Discrete2DPosition(x, y)
-        if current_position == prev_position:
+    if start.x == end.x and start.z == end.z:
+        return [DiscreteVector(0, 1 if start.y < end.y else -1, 0) for _ in range(abs(end.y - start.y))]
+    if start.y == end.y and start.z == end.z:
+        return [DiscreteVector(1 if start.x < end.x else -1, 0, 0) for _ in range(abs(end.x - start.x))]
+    if start.x == end.x and start.y == end.y:
+        return [DiscreteVector(0, 0, 1 if start.z < end.z else -1) for _ in range(abs(end.z - start.z))]
+    rebased_vector = end - start
+    vector_length = int(ceil(rebased_vector.magnitude()))
+    path: List[DiscreteVector] = []
+    prev_position = DiscreteVector(0, 0, 0)
+    for i in range(vector_length + 1):
+        scaled_vector = rebased_vector * (i / vector_length)
+        if scaled_vector == prev_position:
             continue
-        dp = current_position - prev_position
-        if dp.x < -1 or dp.x > 1 or dp.y < -1 or dp.y > 1:
+        position_delta = scaled_vector - prev_position
+        if position_delta.x < -1 or position_delta.x > 1 \
+                or position_delta.y < -1 or position_delta.y > 1 \
+                or position_delta.z < -1 or position_delta.z > 1:
             raise Exception('Path error.')
-        path.append(dp)
-        prev_position = current_position
+        path.append(position_delta)
+        prev_position = scaled_vector
     return path
