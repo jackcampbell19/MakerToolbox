@@ -1,5 +1,6 @@
+from typing import List
+
 from ..hardware import BasicStepperDriver, StepperDriver
-from ..utility import DiscreteVector
 
 
 class CoreXY:
@@ -21,6 +22,16 @@ class CoreXY:
         """
         self._stepper_a = stepper_a
         self._stepper_b = stepper_b
+        self._xy_delta_to_stepper_movement = {
+            (0, 1): (1, -1),
+            (0, -1): (-1, 1),
+            (1, 0): (-1, -1),
+            (-1, 0): (1, 1),
+            (1, 1): (0, -1),
+            (1, -1): (-1, 0),
+            (-1, 1): (1, 0),
+            (-1, -1): (0, 1)
+        }
 
     def move_y(self, steps: int, delay_func: callable = None):
         """
@@ -55,23 +66,30 @@ class CoreXY:
         if steps == 0:
             return
         if steps > 0:
-            self._stepper_a.set_direction(True)
-            self._stepper_b.set_direction(True)
-        else:
             self._stepper_a.set_direction(False)
             self._stepper_b.set_direction(False)
+        else:
+            self._stepper_a.set_direction(True)
+            self._stepper_b.set_direction(True)
         StepperDriver.move([self._stepper_a, self._stepper_b], abs(steps), delay_func)
 
     def move_diagonally(self, steps: int, x_direction: int, y_direction: int, delay_func: callable = None):
         if steps == 0 or x_direction == 0 or y_direction == 0:
             return
+        stepper: StepperDriver
         if x_direction > 0:
             if y_direction > 0:
-                self._stepper_b.step(steps * 2, delay_func, direction=False)
+                stepper = self._stepper_b
+                self._stepper_b.set_direction(False)
             else:
-                self._stepper_a.step(steps * 2, delay_func, direction=False)
+                stepper = self._stepper_a
+                self._stepper_a.set_direction(False)
         else:
             if y_direction > 0:
-                self._stepper_a.step(steps * 2, delay_func, direction=True)
+                stepper = self._stepper_a
+                self._stepper_a.set_direction(True)
             else:
-                self._stepper_b.step(steps * 2, delay_func, direction=True)
+                stepper = self._stepper_b
+                self._stepper_b.set_direction(True)
+        stepper.step(2 * steps, delay_func)
+
