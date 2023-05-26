@@ -21,7 +21,8 @@ class StepperDriver(ABC):
         Args:
             num_steps (int, optional): The number of steps to perform. Defaults to 1.
             delay_func (callable, optional): A function that calculates the delay between steps. Defaults to None.
-            direction (bool, optional): The direction of the steps. True for forward, False for backward. Defaults to None.
+            direction (bool, optional): The direction of the steps, uses the currently set direction if set to None.
+            True for forward, False for backward. Defaults to None.
         """
         if delay_func is None:
             delay_func = self._delay_func

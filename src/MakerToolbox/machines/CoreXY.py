@@ -23,14 +23,15 @@ class CoreXY:
         self._stepper_a = stepper_a
         self._stepper_b = stepper_b
         self._xy_delta_to_stepper_movement = {
+            (0, 0): (0, 0),
             (0, 1): (1, -1),
             (0, -1): (-1, 1),
             (1, 0): (-1, -1),
             (-1, 0): (1, 1),
-            (1, 1): (0, -1),
-            (1, -1): (-1, 0),
-            (-1, 1): (1, 0),
-            (-1, -1): (0, 1)
+            (1, 1): (0, -2),
+            (1, -1): (-2, 0),
+            (-1, 1): (2, 0),
+            (-1, -1): (0, 2)
         }
 
     def move_y(self, steps: int, delay_func: callable = None):
